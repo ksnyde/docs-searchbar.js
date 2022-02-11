@@ -11,6 +11,28 @@ import WindiCSS from "vite-plugin-windicss";
 import Inspect from "vite-plugin-inspect";
 
 export default defineConfig({
+  server: {
+    proxy: {
+      "/local": {
+        target: "http://localhost:7700",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/local/, "/"),
+      },
+      "/staging": {
+        target: "https://search2.tauri.studio",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/staging/, "/"),
+      },
+      "/production": {
+        target: "https://search.tauri.studio",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/production/, "/"),
+      },
+    },
+  },
   resolve: {
     dedupe: ["vue"],
     alias: {

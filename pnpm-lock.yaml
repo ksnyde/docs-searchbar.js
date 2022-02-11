@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@iconify-json/carbon': ^1.0.14
   '@iconify-json/ic': ^1.0.8
   '@types/node': '14'
   '@typescript-eslint/eslint-plugin': ^5.11.0
@@ -17,6 +18,7 @@ specifiers:
   eslint-plugin-unicorn: ^40.1.0
   floating-vue: ^2.0.0-beta.5
   jsdom: ^19.0.0
+  native-dash: ^1.22.0
   npm-run-all: ^4.1.5
   prettier: ^2.5.1
   rimraf: ^3.0.2
@@ -33,8 +35,10 @@ specifiers:
 dependencies:
   '@vueuse/core': 7.6.0_vue@3.2.30
   floating-vue: 2.0.0-beta.5_vue@3.2.30
+  native-dash: 1.22.0
 
 devDependencies:
+  '@iconify-json/carbon': 1.0.14
   '@iconify-json/ic': 1.0.8
   '@types/node': 14.18.10
   '@typescript-eslint/eslint-plugin': 5.11.0_de5a1ddccd75ca1e499b8b8491d3dcba
@@ -185,6 +189,12 @@ packages:
 
   /@humanwhocodes/object-schema/1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
+    dev: true
+
+  /@iconify-json/carbon/1.0.14:
+    resolution: {integrity: sha512-nPJtOG2wmGwSek4wFoQWOecQKhIuav2qBFXqDWQl+vfqwqwCEYloUrFzedqhwhFv1AO/P81CY+F919YuYWgCXA==}
+    dependencies:
+      '@iconify/types': 1.0.12
     dev: true
 
   /@iconify-json/ic/1.0.8:
@@ -979,6 +989,10 @@ packages:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
     dev: true
+
+  /common-types/1.31.1:
+    resolution: {integrity: sha512-eixAd22Gmek1dgsPgyqCSjzMAlp8rpSLkb44iEMfOzR9fwGFYEkH+AWOHmwSFxWmO8MvMND/m1jpZX0Wk4+yJA==}
+    dev: false
 
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
@@ -2103,6 +2117,12 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /inferred-types/0.18.4:
+    resolution: {integrity: sha512-rdI+5Zuxb7eYKAkU6PxoxqW0TzdFxodMHaUNAmuaxaCg2ngZTKwBTN5LqimfxNyRCOZWyv0DGd7DzNE9mZXVQA==}
+    dependencies:
+      common-types: 1.31.1
+    dev: false
+
   /inflight/1.0.6:
     resolution: {integrity: sha1-Sb1jMdfQLQwJvJEKEHW6gWW1bfk=}
     dependencies:
@@ -2612,6 +2632,12 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /native-dash/1.22.0:
+    resolution: {integrity: sha512-8GUM8+gGbqXu8oVyglbinZw2wECpmFAYTVsFwMYNJpWaHmd84suWJDXhMpbNf+QC/06jgqqOajRAHakfEcWyAg==}
+    dependencies:
+      inferred-types: 0.18.4
+    dev: false
 
   /natural-compare/1.4.0:
     resolution: {integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=}

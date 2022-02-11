@@ -6,15 +6,28 @@ import { search } from "~/utils/request";
 import type { Placement } from "floating-vue";
 import SearchHit from "./SearchHit.vue";
 import {
+  ExtendedConfig,
   IMeilisearchSearchResponse,
   SearchBarConfig,
   TransformerFunction,
 } from "~/types";
+import { groupBy } from "native-dash";
 const el = ref();
 const tooltip = ref();
 const searchText = ref("");
 
+const { focused: searchHasFocus } = useFocus({ target: el });
+
 const props = defineProps({
+  title: {
+    type: [String, Array] as PropType<string | string[]>,
+    default: "hierarchy_lvl0",
+  },
+  subHeading: {
+    type: [String, Array] as PropType<string | string[]>,
+    default: () => ["hierarchy_lvl1", "hierarchy_lvl2"],
+  },
+  description: { type: String, default: undefined },
   placeholder: { type: String, default: "Search", required: false },
   placement: {
     type: String as PropType<Placement>,
@@ -22,11 +35,15 @@ const props = defineProps({
     required: false,
   },
   autocomplete: { type: String, default: "off", required: false },
-  kind: {
-    type: String as PropType<"simple" | "column">,
-    default: "simple",
+  groupBy: {
+    type: String,
+    default: undefined,
     required: false,
   },
+  skidding: { type: Number, required: false },
+  distance: { type: Number, required: false },
+  limit: { type: Number, default: 10, required: false },
+  offset: { type: Number, required: false },
   /**
    * optionally pass in a function to transform results/hits prior to
    * having them rendered.
@@ -38,7 +55,27 @@ const props = defineProps({
   config: { type: Object as PropType<SearchBarConfig>, required: true },
 });
 
+const extendedConfig = computed(() => {
+  return {
+    ...props.config,
+    title: props.title,
+    subHeading: props.subHeading,
+    description: props.description,
+    limit: props.limit,
+    offset: props.offset,
+    groupBy: props.groupBy,
+  } as ExtendedConfig;
+});
+
+/** search results */
 const results = ref<IMeilisearchSearchResponse | null>(null);
+/** grouped search results */
+const grouped = computed(() => {
+  return props.groupBy
+    ? groupBy(props.groupBy as any, results.value?.hits || [])
+    : {};
+});
+
 /** the total available search results (ignoring "limit") */
 const totalHits = computed(() => {
   return results.value?.nbHits;
@@ -63,7 +100,12 @@ onKeyStroke("Escape", () => {
 });
 
 onClickOutside(tooltip, () => {
-  closed.value = true;
+  if (searchHasFocus.value) {
+    console.log("outside but focused");
+  }
+  console.log("outside not focused");
+
+  // closed.value = true;
 });
 
 debouncedWatch(
@@ -123,10 +165,16 @@ onStartTyping(() => {
 });
 </script>
 
+<style lang="css" scoped>
+.v-popper__wrapper {
+  @apply rounded-lg;
+}
+</style>
+
 <template>
   <div
     role="search"
-    class="meili-searchbar searchbox__wrapper relative"
+    class="meili-searchbar searchbox__wrapper relative flex flex-grow items-center"
     :data-hits="totalHits"
     :data-limit="limit"
     :data-offset="offset"
@@ -134,7 +182,7 @@ onStartTyping(() => {
     <ic:round-search
       class="absolute flex w-6 h-full left-1.5 text-gray-500 inset-y-0"
     />
-    <v-tooltip
+    <v-menu
       ref="tooltip"
       class="w-full transition-opacity duration-200 ease-in-out"
       :placement="placement"
@@ -146,7 +194,7 @@ onStartTyping(() => {
         id="${suggestionPrefix}"
         :value="searchText"
         type="string"
-        class="flex w-full searchbox__input pl-8 pr-2 py-1 ring-1 ring-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 shadow focus:placeholder-gray-500/35"
+        class="flex w-full searchbox__input pl-8 pr-2 py-1 ring-1 ring-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 shadow dark:input-gray-900 focus:placeholder-gray-500/35"
         :placeholder="placeholder"
         :autocomplete="autocomplete"
         spellcheck="false"
@@ -166,7 +214,15 @@ onStartTyping(() => {
             v-for="hit in (results || {}).hits"
             :key="hit[config.primaryKey || 'id' as any]"
           >
-            <search-hit :result="hit" />
+            <grouped-hits
+              v-if="groupBy.length > 0"
+              v-for="group in Object.keys(grouped)"
+              :key="group"
+              :results="grouped[group]"
+              :group="group"
+              :config="extendedConfig"
+            />
+            <search-hit v-else :result="hit" :config="extendedConfig" />
           </div>
           <div v-show="display === 'searching'">searching ...</div>
           <div v-show="display === 'nothing'" class="no-results">
@@ -174,7 +230,7 @@ onStartTyping(() => {
           </div>
         </div>
       </template>
-    </v-tooltip>
+    </v-menu>
     <ic:round-cancel
       class="absolute flex h-full w-5 right-2 inset-y-0"
       :class="

@@ -119,12 +119,10 @@ cypress/plugins
 cypress/fixtures
 
 
-
-
 .DS_Store
 coverage/
-node_modules/
-dist/
+**/node_modules/
+**/dist/
 .idea/
 npm-debug.log*
 yarn-error.log
@@ -132,3 +130,5 @@ dist-es5-module/
 tmp
 docs/.textlintcache
 .netlify
+
+**/components.d.ts

@@ -4,6 +4,9 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
+    CarbonMoon: typeof import('~icons/carbon/moon')['default']
+    CarbonSun: typeof import('~icons/carbon/sun')['default']
+    GroupedHits: typeof import('./components/GroupedHits.vue')['default']
     'Ic:roundCancel': typeof import('~icons/ic/round-cancel')['default']
     'Ic:roundSearch': typeof import('~icons/ic/round-search')['default']
     ResultsCategory: typeof import('./components/ResultsCategory.vue')['default']

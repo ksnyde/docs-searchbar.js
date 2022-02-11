@@ -6,7 +6,7 @@ export interface SearchBarConfig {
   /** the fully qualified URL to use to get to the MeiliSearch server */
   hostUrl: string;
   /** the API key to use for searches */
-  apiKey: string;
+  apiKey: string | undefined;
   /**
    * the _index_ which will be searched when user enters text.
    */
@@ -28,8 +28,25 @@ export interface SearchBarConfig {
 }
 
 export interface ExtendedConfig extends SearchBarConfig {
+  /** the property in the document which will be displayed as the TITLE */
+  title?: string | string[];
+  /** the property in the document which will be displayed as the SUB HEADING */
+  subHeading?: string | string[];
+  /**
+   * a property which will be displayed in smaller font size and below the
+   * top line which has the title and sub-heading.
+   */
+  description?: string | string[];
+
+  /** the maximum number of search "hits" allowed before pagination */
   limit?: number;
   offset?: number;
+  /**
+   * this attribute indicates that the results should be presented in
+   * groups and using the property name in this field to determine which
+   * to group on.
+   */
+  groupBy?: string;
 }
 
 /**

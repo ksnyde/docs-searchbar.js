@@ -3,8 +3,8 @@ import { IMeilisearchSearchResponse, SearchBarConfig } from "~/types";
 const headers = (c: SearchBarConfig) => ({
   "Access-Control-Allow-Origin": "*",
   "Content-Type": "application/json",
-  Authorization: `Bearer ${c.apiKey}`,
-  "X-Meili-API-Key": c.apiKey,
+  ...(c.apiKey ? {Authorization: `Bearer ${c.apiKey}`} : {}),
+  ...(c.apiKey ? {"X-Meili-API-Key": c.apiKey} : {}),
 });
 
 export const get =
