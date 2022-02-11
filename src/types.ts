@@ -38,6 +38,9 @@ export interface ExtendedConfig extends SearchBarConfig {
    */
   description?: string | string[];
 
+  sections?: string | string[];
+  subSections?: string | string[];
+
   /** the maximum number of search "hits" allowed before pagination */
   limit?: number;
   offset?: number;

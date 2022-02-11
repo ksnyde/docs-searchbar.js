@@ -13,10 +13,6 @@ const props = defineProps({
 });
 
 const pk = computed(() => props.config.primaryKey as string);
-
-function navigate() {
-  console.log(`navigate to: `);
-}
 </script>
 
 <template>

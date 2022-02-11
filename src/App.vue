@@ -2,11 +2,23 @@
 import { SearchBarConfig } from "~/types";
 import { isEventWithValue } from "~/type-guards";
 import { isDark, toggleDark } from "~/composables/dark";
+import { Placement } from "floating-vue";
 
 type Env = "local" | "staging" | "production";
 
 const env = ref<Env>("local");
-const groupBy = ref("");
+
+const state = reactive({
+  groupBy: "",
+  distance: 0,
+  skidding: 0,
+  title: ["hierarchy_lvl0"] as string[],
+  subHeading: ["hierarchy_lvl1", "hierarchy_lvl2"] as string[],
+  description: [] as string[],
+  sections: [] as string[],
+  subSections: [] as string[],
+  placement: "bottom-end" as Placement,
+});
 
 const config: Record<Env, SearchBarConfig> = {
   local: {
@@ -48,7 +60,7 @@ const limit = ref(10);
           class="hidden md:block md:col-span-2 flex items-center place-items-center"
         >
           <button
-            class="icon-btn !outline-none p-1"
+            class="h-full icon-btn !outline-none"
             title="toggle light/dark mode"
             @click="toggleDark()"
           >
@@ -74,10 +86,18 @@ const limit = ref(10);
             <carbon-sun v-else />
           </button>
           <search-bar
+            class="flex-grow"
             :config="config[env]"
             :limit="limit"
-            :group-by="groupBy"
-            class="flex-grow"
+            :placement="state.placement"
+            :skidding="state.skidding"
+            :distance="state.distance"
+            :group-by="state.groupBy"
+            :title="state.title"
+            :sub-heading="state.subHeading"
+            :description="state.description"
+            :sections="state.sections"
+            :sub-sections="state.subSections"
           />
         </div>
       </div>
@@ -87,7 +107,7 @@ const limit = ref(10);
       >
         <details open class="w-full">
           <summary class="">Component Settings</summary>
-          <div class="playground mt-2 p-4 grid grid-cols-3 gap-2">
+          <div class="playground mt-2 p-4 grid grid-cols-3 gap-4">
             <div class="flex flex-col">
               <label for="env">Server Env</label>
               <select
@@ -105,6 +125,45 @@ const limit = ref(10);
                 <option value="staging">Staging Search</option>
                 <option value="production">Production Search</option>
               </select>
+
+              <label for="title" class="mt-4">
+                <span class="font-bold">title</span> prop
+              </label>
+              <input
+                type="text"
+                :value="state.title.join(', ')"
+                @change="
+                  (e) => {
+                    state.title = isEventWithValue(e) ? (e.target.value as string).split(/[,\s]+/) : state.title;
+                  }
+                "
+              />
+
+              <label for="subHeading" class="mt-4">
+                <span class="font-bold">subHeading</span> prop
+              </label>
+              <input
+                type="text"
+                :value="state.subHeading.join(', ')"
+                @change="
+                  (e) => {
+                    state.subHeading = isEventWithValue(e) ? (e.target.value as string).split(/[,\s]+/) : state.subHeading;
+                  }
+                "
+              />
+
+              <label for="description" class="mt-4">
+                <span class="font-bold">description</span> prop
+              </label>
+              <input
+                type="text"
+                :value="state.description.join(', ')"
+                @change="
+                  (e) => {
+                    state.description = isEventWithValue(e) ? (e.target.value as string).split(/[,\s]+/) : state.description;
+                  }
+                "
+              />
             </div>
             <div class="flex flex-col">
               <label for="groupBy"
@@ -113,11 +172,11 @@ const limit = ref(10);
               <select
                 name="groupBy"
                 id="groupBy"
-                :value="groupBy"
+                :value="state.groupBy"
                 class=""
                 @change="
                   (e) => {
-                    groupBy = isEventWithValue(e) ? e.target.value : env;
+                    state.groupBy = isEventWithValue(e) ? e.target.value : env;
                   }
                 "
               >
@@ -130,6 +189,105 @@ const limit = ref(10);
                 <option value="hierarchy_lvl2">hierarchy_lvl2 prop</option>
                 <option value="hierarchy_lvl3">hierarchy_lvl3 prop</option>
                 <option value="hierarchy_lvl4">hierarchy_lvl4 prop</option>
+              </select>
+
+              <label for="sections" class="mt-4">
+                <span class="font-bold">sections</span> prop
+              </label>
+              <input
+                type="text"
+                :value="state.sections.join(', ')"
+                @change="
+                  (e) => {
+                    state.sections = isEventWithValue(e) ? (e.target.value as string).split(/[,\s]+/) : state.sections;
+                  }
+                "
+              />
+
+              <label for="subSections" class="mt-4">
+                <span class="font-bold">subSections</span> prop
+              </label>
+              <input
+                type="text"
+                :value="state.subSections.join(', ')"
+                @change="
+                  (e) => {
+                    state.subSections = isEventWithValue(e) ? (e.target.value as string).split(/[,\s]+/) : state.subSections;
+                  }
+                "
+              />
+            </div>
+
+            <div class="flex flex-col space-y-2">
+              <label for="distance">
+                <span class="font-bold">distance</span> prop
+              </label>
+              <input
+                type="range"
+                :value="state.distance"
+                :min="-30"
+                :max="30"
+                @dblclick="
+                  () => {
+                    state.distance = 0;
+                  }
+                "
+                @change="
+                  (e) => {
+                    state.distance = isEventWithValue(e)
+                      ? Number(e.target.value)
+                      : state.distance;
+                  }
+                "
+              />
+
+              <label for="skidding">
+                <span class="font-bold">skidding</span> prop
+              </label>
+              <input
+                type="range"
+                :value="state.skidding"
+                :min="-30"
+                :max="30"
+                @dblclick="
+                  () => {
+                    state.skidding = 0;
+                  }
+                "
+                @change="
+                  (e) => {
+                    state.skidding = isEventWithValue(e)
+                      ? Number(e.target.value)
+                      : state.skidding;
+                  }
+                "
+              />
+
+              <label for="placement" class="pt-2">
+                <span class="font-bold">placement</span> prop
+              </label>
+              <select
+                name="placement"
+                id="placement"
+                :value="state.placement"
+                class=""
+                @change="
+                  (e) => {
+                    state.placement = isEventWithValue(e)
+                      ? e.target.value
+                      : state.placement;
+                  }
+                "
+              >
+                <option value="auto">auto</option>
+                <option value="bottom-end">bottom-end</option>
+                <option value="bottom-start">bottom-start</option>
+                <option value="bottom">bottom</option>
+                <option value="top">top</option>
+                <option value="top-start">top-start</option>
+                <option value="top-end">top-end</option>
+                <option value="left">left</option>
+                <option value="right">right</option>
               </select>
             </div>
           </div>
@@ -181,7 +339,11 @@ summary {
   @apply hover:bg-gray-100/25 dark:hover:bg-gray-900 cursor-pointer w-full p-1;
 }
 
-select {
-  @apply px-4 py-3 bg-gray-50 dark:bg-gray-900;
+select,
+input {
+  @apply px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded;
+}
+label {
+  @apply mb-0.5;
 }
 </style>

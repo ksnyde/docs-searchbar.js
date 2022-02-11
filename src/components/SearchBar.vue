@@ -16,8 +16,6 @@ const el = ref();
 const tooltip = ref();
 const searchText = ref("");
 
-const { focused: searchHasFocus } = useFocus({ target: el });
-
 const props = defineProps({
   title: {
     type: [String, Array] as PropType<string | string[]>,
@@ -27,7 +25,7 @@ const props = defineProps({
     type: [String, Array] as PropType<string | string[]>,
     default: () => ["hierarchy_lvl1", "hierarchy_lvl2"],
   },
-  description: { type: String, default: undefined },
+  description: { type: [String, Array], default: undefined },
   placeholder: { type: String, default: "Search", required: false },
   placement: {
     type: String as PropType<Placement>,
@@ -76,46 +74,73 @@ const grouped = computed(() => {
     : {};
 });
 
-/** the total available search results (ignoring "limit") */
-const totalHits = computed(() => {
-  return results.value?.nbHits;
-});
-const limit = computed(() => {
-  return results.value?.limit;
-});
-const offset = computed(() => {
-  return results.value?.offset;
+const hits = {
+  /** the total available search results (ignoring "limit") */
+  totalHits: computed(() => {
+    return results.value?.nbHits || 0;
+  }),
+  showing: computed(() => {
+    return (results.value?.hits || []).length || 0;
+  }),
+
+  limit: computed(() => {
+    return results.value?.limit;
+  }),
+  offset: computed(() => {
+    return results.value?.offset;
+  }),
+};
+
+const state = reactive({
+  /** actively searching */
+  searching: ref(false),
+  /**
+   * whether a grouping property has been included for group layout
+   */
+  isGrouped: ref(props.groupBy && props.groupBy.length > 0 ? true : false),
+  /** at least one result present */
+  hasResults: computed(() =>
+    results.value?.hits?.length || 0 > 0 ? true : false
+  ),
+  /** The input element has focus */
+  inputFocused: useFocusWithin(el).focused,
+  tooltipFocused: useFocusWithin(tooltip).focused,
+  /**
+   * when search results are explicitly closed
+   * (e.g., ESC key, click outside, etc.)
+   */
+  explicitClose: ref(false),
 });
 
-const searching = ref(false);
-/**
- * when search results are explicitly closed
- * (e.g., ESC key, click outside, etc.)
- */
-const closed = ref(false);
+const show = computed(() => {
+  return (
+    state.searching ||
+    (state.hasResults && state.inputFocused) ||
+    (state.hasResults && !state.explicitClose)
+  );
+});
 
 onKeyStroke("Escape", () => {
-  closed.value = true;
+  state.explicitClose = true;
   el.value.blur();
 });
 
 onClickOutside(tooltip, () => {
-  if (searchHasFocus.value) {
-    console.log("outside but focused");
-  }
-  console.log("outside not focused");
+  console.log({ ...state });
 
-  // closed.value = true;
+  if (!state.inputFocused || state.tooltipFocused) {
+    state.explicitClose = true;
+  }
 });
 
 debouncedWatch(
   searchText,
   async () => {
     if (searchText.value.trim().length > 0) {
-      searching.value = true;
-      closed.value = false;
+      state.searching = true;
+      state.explicitClose = false;
       results.value = await search(props.config)(searchText.value);
-      searching.value = false;
+      state.searching = false;
       if (props.config.debug) {
         console.groupCollapsed(
           `Search results received [ ${results.value.hits.length} of ${results.value.nbHits} ]`
@@ -142,22 +167,6 @@ debouncedWatch(
   { debounce: 500 }
 );
 
-const display = computed(() => {
-  if (closed.value) {
-    return "hide";
-  }
-
-  if (results.value?.hits.length || 0 > 0) {
-    return "results";
-  } else if (searching.value) {
-    return "searching";
-  } else if (searchText.value.length > 0) {
-    return "nothing";
-  } else {
-    return "hide";
-  }
-});
-
 onStartTyping(() => {
   if (!el.value.active) {
     el.value.focus();
@@ -165,9 +174,16 @@ onStartTyping(() => {
 });
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 .v-popper__wrapper {
-  @apply rounded-lg;
+  @apply rounded-lg overflow-hidden;
+}
+html.dar .v-popper__arrow-container {
+  @apply border-gray-800 bg-gray-800;
+}
+html.dark .v-popper__wrapper,
+html.dark .v-popper__inner {
+  @apply bg-gray-800 text-gray-100 border-gray-900;
 }
 </style>
 
@@ -175,62 +191,79 @@ onStartTyping(() => {
   <div
     role="search"
     class="meili-searchbar searchbox__wrapper relative flex flex-grow items-center"
-    :data-hits="totalHits"
-    :data-limit="limit"
-    :data-offset="offset"
+    :data-hits="hits.totalHits"
+    :data-limit="hits.limit"
+    :data-offset="hits.offset"
   >
     <ic:round-search
       class="absolute flex w-6 h-full left-1.5 text-gray-500 inset-y-0"
     />
-    <v-menu
+    <v-dropdown
       ref="tooltip"
       class="w-full transition-opacity duration-200 ease-in-out"
       :placement="placement"
       :triggers="[]"
-      :shown="display !== 'hide'"
+      :autohide="false"
+      :shown="show"
+      :distance="distance"
+      :skidding="skidding"
     >
       <input
         ref="el"
         id="${suggestionPrefix}"
         :value="searchText"
         type="string"
-        class="flex w-full searchbox__input pl-8 pr-2 py-1 ring-1 ring-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 shadow dark:input-gray-900 focus:placeholder-gray-500/35"
+        class="flex w-full searchbox__input pl-8 pr-2 py-1 ring-1 ring-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 shadow dark:text-gray-900 focus:placeholder-gray-500/35"
         :placeholder="placeholder"
         :autocomplete="autocomplete"
         spellcheck="false"
-        @focus="closed = false"
+        @focus="state.explicitClose = false"
         @input="
         (event) =>
           (searchText = isEventWithTargetValue(event)
             ? event.target.value as string || ''
             : '')
-      "
+        "
       />
       <template #popper>
         <div class="min-h-150px p-4 w-2xl flex flex-col space-y-2">
+          <grouped-hits
+            v-if="state.hasResults && state.isGrouped"
+            v-for="group in Object.keys(grouped)"
+            :key="group"
+            :results="grouped[group]"
+            :group="group"
+            :config="extendedConfig"
+          />
           <div
-            v-show="display === 'results'"
+            v-show="state.hasResults && !state.isGrouped"
             class="hits"
             v-for="hit in (results || {}).hits"
             :key="hit[config.primaryKey || 'id' as any]"
           >
-            <grouped-hits
-              v-if="groupBy.length > 0"
-              v-for="group in Object.keys(grouped)"
-              :key="group"
-              :results="grouped[group]"
-              :group="group"
-              :config="extendedConfig"
-            />
-            <search-hit v-else :result="hit" :config="extendedConfig" />
+            <search-hit :result="hit" :config="extendedConfig" />
           </div>
-          <div v-show="display === 'searching'">searching ...</div>
-          <div v-show="display === 'nothing'" class="no-results">
-            nothing ...
+          <div v-show="state.searching">searching ...</div>
+          <div
+            v-show="!state.searching && !state.hasResults"
+            class="no-results"
+          >
+            nothing found
+          </div>
+          <div v-if="state.hasResults" class="results-footer">
+            <div
+              v-if="Number(hits.showing) !== Number(hits.totalHits)"
+              class="footer pt-6 self-end font-light italic text-sm"
+            >
+              showing {{ hits.showing }} of {{ hits.totalHits }} results
+            </div>
+            <div v-else class="footer pt-6 self-end font-light italic text-sm">
+              showing all {{ hits.totalHits }} results
+            </div>
           </div>
         </div>
       </template>
-    </v-menu>
+    </v-dropdown>
     <ic:round-cancel
       class="absolute flex h-full w-5 right-2 inset-y-0"
       :class="
