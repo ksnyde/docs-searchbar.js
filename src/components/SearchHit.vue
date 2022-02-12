@@ -92,8 +92,9 @@ function navigate() {
             :key="section"
             :href="`${p.url}/#${section}`"
             class="flex hover:underline hover:bg-darker-100/50 p-1 rounded"
-            >{{ section }}</a
           >
+            {{ section }}
+          </a>
         </div>
       </div>
     </div>

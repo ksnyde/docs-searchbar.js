@@ -47,6 +47,8 @@ const state = reactive({
   placement: "bottom-end" as Placement,
   limit: 10,
   config: computed(() => config[env.value]),
+
+  groupIconsWithSlot: false,
 });
 </script>
 
@@ -87,7 +89,16 @@ const state = reactive({
             <carbon-moon v-if="isDark" />
             <carbon-sun v-else />
           </button>
-          <search-bar class="flex-grow" v-bind="state" />
+          <search-bar class="flex-grow" v-bind="state">
+            <template #groupIcon="{ group, config, results }">
+              <group-icon
+                v-if="state.groupIconsWithSlot"
+                :group="group"
+                :config="config"
+                :results="results"
+              />
+            </template>
+          </search-bar>
         </div>
       </div>
 
@@ -256,6 +267,27 @@ const state = reactive({
                   }
                 "
               />
+
+              <div class="flex flex-row mt-10 items-center">
+                <input
+                  type="checkbox"
+                  class=""
+                  :value="state.groupIconsWithSlot"
+                  @change="
+                    (e) => {
+                      state.groupIconsWithSlot = isEventWithValue(e)
+                        ? Boolean((e.target as any)?.checked )
+                        : Boolean(state.groupIconsWithSlot);
+                    }
+                  "
+                />
+                <label for="groupIconsWithSlot" class="ml-4">
+                  <span class="italic"
+                    >add group icons using
+                    <span class="font-bold">groupIcon</span> slot prop</span
+                  >
+                </label>
+              </div>
             </div>
 
             <div class="flex flex-col space-y-4">

@@ -12,6 +12,7 @@ import {
   TransformerFunction,
 } from "~/types";
 import { groupBy } from "native-dash";
+import GroupIcon from "./documentation/GroupIcon.vue";
 const el = ref();
 const tooltip = ref();
 const searchText = ref("");
@@ -282,7 +283,14 @@ html.dark .v-popper__inner {
             :results="grouped[group]"
             :group="group"
             :config="extendedConfig"
-          />
+          >
+            <slot
+              name="groupIcon"
+              :group="group"
+              :config="config"
+              :results="results"
+            ></slot>
+          </grouped-hits>
           <div
             v-show="state.hasResults && !state.isGrouped"
             class="hits"

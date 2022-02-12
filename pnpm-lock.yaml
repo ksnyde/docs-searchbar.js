@@ -1,8 +1,20 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@iconify-json/bx': ^1.0.3
   '@iconify-json/carbon': ^1.0.15
+  '@iconify-json/cib': ^1.0.1
+  '@iconify-json/clarity': ^1.0.2
+  '@iconify-json/eos-icons': ^1.0.4
+  '@iconify-json/ep': ^1.0.5
+  '@iconify-json/file-icons': ^1.0.1
+  '@iconify-json/fluent': ^1.0.18
   '@iconify-json/ic': ^1.0.8
+  '@iconify-json/icon-park-outline': ^1.0.2
+  '@iconify-json/mdi': ^1.0.17
+  '@iconify-json/ph': ^1.0.4
+  '@iconify-json/vscode-icons': ^1.0.3
+  '@iconify-json/zondicons': ^1.0.1
   '@types/node': ^14.18.11
   '@typescript-eslint/eslint-plugin': ^5.11.0
   '@typescript-eslint/parser': ^5.11.0
@@ -39,8 +51,20 @@ dependencies:
   native-dash: 1.22.0
 
 devDependencies:
+  '@iconify-json/bx': 1.0.3
   '@iconify-json/carbon': 1.0.15
+  '@iconify-json/cib': 1.0.1
+  '@iconify-json/clarity': 1.0.2
+  '@iconify-json/eos-icons': 1.0.4
+  '@iconify-json/ep': 1.0.5
+  '@iconify-json/file-icons': 1.0.1
+  '@iconify-json/fluent': 1.0.18
   '@iconify-json/ic': 1.0.8
+  '@iconify-json/icon-park-outline': 1.0.2
+  '@iconify-json/mdi': 1.0.17
+  '@iconify-json/ph': 1.0.4
+  '@iconify-json/vscode-icons': 1.0.3
+  '@iconify-json/zondicons': 1.0.1
   '@types/node': 14.18.11
   '@typescript-eslint/eslint-plugin': 5.11.0_de5a1ddccd75ca1e499b8b8491d3dcba
   '@typescript-eslint/parser': 5.11.0_eslint@8.8.0+typescript@4.5.5
@@ -193,14 +217,86 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
+  /@iconify-json/bx/1.0.3:
+    resolution: {integrity: sha512-nwUxwOwocTp5u+KcBUraqEXiC7VG6niL6RQIdbLsRjZwouxayyVXPIkBPwMEmxpcTk1SA8Jh52MI+Scex1wJSA==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
   /@iconify-json/carbon/1.0.15:
     resolution: {integrity: sha512-KEPnhYb42DpqyrDsUPMvWCr90R9/ZOOu3eRTcnyq+dRLeP+UMBz0bKfcFXtw9PVLSVRpvI1sPoHNeuaans8FDw==}
     dependencies:
       '@iconify/types': 1.0.12
     dev: true
 
+  /@iconify-json/cib/1.0.1:
+    resolution: {integrity: sha512-UcF1m0cvQslImM7RSV+IVCDdMKXAe9pWcYUbEpDdW/agv3IGc6X9xIclCIYGzA0bKcNkWIEvChrLm+ohs8fzPQ==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/clarity/1.0.2:
+    resolution: {integrity: sha512-M8Yn6gYGMxO602LAXb+zEbKf0nv/0D0catcHxkvoeTuSh8F9aLuX0JMR5jLisgfaKfdwzlEK4Iv5IyEijaYStQ==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/eos-icons/1.0.4:
+    resolution: {integrity: sha512-H+Mix1/bN/9nEOpbYuxivX7ZfRH98UTZY+6YJ85NNNSjsy6O+i0MFsefPbFK/SW/+MMtvDMFEF7HwPwLKxIlhw==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/ep/1.0.5:
+    resolution: {integrity: sha512-C4acBbNV+LMXkJ6b9O1y3CX/f3/0zHI2Xijp0e4eg8WE1vf6vQjzjGkBNYyd30wEEna+5OtlUV0IvoRE/R8j2g==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/file-icons/1.0.1:
+    resolution: {integrity: sha512-YZGyyV24Qw/YkCMbVfplcVfjQUcDMHH1WPYVlY6uKG9szRHx7OPVxeqCPow7i/3+TzN1gGTPtkrHzeHi5GXf6w==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/fluent/1.0.18:
+    resolution: {integrity: sha512-AyU4uem3H8WhdYFZ2u2wLnKn8YPxuhqYVNRgxczWQRS6TE2ls7XRR6nfp078oU0DvJSIUcpaJJVgg6iRaHPMZQ==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
   /@iconify-json/ic/1.0.8:
     resolution: {integrity: sha512-XFaX8ajH270Pry9Q6Wp0+3YzOaDMpnuV+heEk3OxZmOH7t4PWSNYPIIycWSQ3MNl8M/ZwY585PEEu6CCeAbjyQ==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/icon-park-outline/1.0.2:
+    resolution: {integrity: sha512-2g+TAqeP2mXR6oaQehFHYwbqXQMT23ksWRD3Ez9q4xpvGUSU++UR7d6Hxaj9F9QG4H31OZLnNmTeSsfPEmeHPw==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/mdi/1.0.17:
+    resolution: {integrity: sha512-OUSpkZIBJosxC+HC/GMvxoHwqUairQ0tA5i9IaT5moPWFJnA6TR+71IB1wRXZlPa0uT2lQp0t4AUWFY9Pnr19w==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/ph/1.0.4:
+    resolution: {integrity: sha512-hcxC2k25/Lh/bgXgbwAD4WvnC8BeunSqafFwIOyL1dCu3QGBgKmPFIBUv4W2kBm+rbrv7F3WHPFBAJDVrjpunA==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/vscode-icons/1.0.3:
+    resolution: {integrity: sha512-3GW+zXEqQxqYCUcglAITagE945qCJUOihCC7yJwE7yPKkYOEsEb+w6GKNkqJ8RMM0vJFA4uNqSJTtqaFS9QF+A==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
+
+  /@iconify-json/zondicons/1.0.1:
+    resolution: {integrity: sha512-JqE4Jb4SolHHnML5yaeWnjyNIf5FP2veD1ARH8HoAFcpKCE71fAl02jyNFdtLuy1OUFT4FjjBdlNkfFm2kpKqQ==}
     dependencies:
       '@iconify/types': 1.0.12
     dev: true

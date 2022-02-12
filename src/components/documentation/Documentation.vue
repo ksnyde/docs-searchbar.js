@@ -127,13 +127,16 @@ li {
             <h2>Properties</h2>
             <div class="content">
               <search-property name="distance" type="number">
-                <!--  -->
+                the number of pixels in separation there should be between the
+                search bar and the popup dialog for results.
               </search-property>
               <search-property name="skidding" type="number">
                 <!--  -->
               </search-property>
               <search-property name="placement" type="enum">
-                <!--  -->
+                <p>
+                  The placement of the results popup relative to the search bar.
+                </p>
               </search-property>
 
               <separator />
@@ -149,10 +152,13 @@ li {
               </search-property>
               <search-property name="focus-key" type="enum">
                 <p>
-                  Allows a set of choices for hot keys which will bring up
-                  search. This can be nice but is <i>less</i> necessary because
-                  by default any keyboard typing will immediately focus the
-                  search bar if no other element is focused.
+                  Allows a set of choices for hot keys which will give focus to
+                  the search bar.
+                </p>
+                <p>
+                  Note: this is independant from the "startTyping" property
+                  which will automatically direct focus to search when a user
+                  starts typing.
                 </p>
               </search-property>
 
@@ -173,9 +179,6 @@ li {
                   an offset of 0, you can change this to move deeper into the
                   resultset.
                 </p>
-              </search-property>
-              <search-property name="" type="">
-                <!--  -->
               </search-property>
             </div>
           </div>
@@ -202,6 +205,22 @@ li {
                   When a search is <i>grouped</i>, each group block with both
                   group meta as well the results for that block are provided to
                   the render to render the group block.
+                </p>
+              </search-slot>
+              <search-slot name="doc-icon" type="ISearchHit">
+                <p>
+                  Allows consumer of this component to add an icon to each
+                  document. Because the slot props provides the full document
+                  dictionary, the consumer can react to the document that is
+                  being rendered.
+                </p>
+              </search-slot>
+              <search-slot name="group-icon" type="IGroupHits">
+                <p>
+                  Allows consumer of this component to add an icon to each
+                  group. The slot-props provide full group and document context
+                  so the consumer can react to the group which is being
+                  rendered.
                 </p>
               </search-slot>
             </div>
