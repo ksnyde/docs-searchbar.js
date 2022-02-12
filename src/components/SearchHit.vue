@@ -22,12 +22,32 @@ function extractWithDefault(
   return suggestedProp ? result[suggestedProp as string] : "";
 }
 
+const description = extractWithDefault(
+  props.result,
+  props.config.description
+) as undefined | string;
+
+/** mapped properties */
 const p = computed(() => ({
+  /** the content for title after mapping */
   title: extractWithDefault(props.result, props.config.title),
+  /** the content for subHeading after mapping */
   subHeading: extractWithDefault(props.result, props.config.subHeading),
-  sections: extractWithDefault(props.result, props.config.sections),
+  /** the content for sections after mapping */
+  sections: extractWithDefault(props.result, props.config.sections) || [],
+  /** the content for sub-sections after mapping */
   subSections: extractWithDefault(props.result, props.config.subSections),
-  description: extractWithDefault(props.result, props.config.description),
+  /** the content for description after mapping */
+  description:
+    (props.config.descLength && description?.length) ||
+    0 > (props.config.descLength as number)
+      ? `${extractWithDefault(props.result, props.config.description).slice(
+          0,
+          props.config.descLength as number
+        )} ...`
+      : extractWithDefault(props.result, props.config.description),
+
+  url: props.result.url,
 }));
 
 function navigate() {
@@ -37,13 +57,51 @@ function navigate() {
 
 <template>
   <div
-    class="hit flex rounded ring-1 ring-gray-500 hover:ring-gray-400 px-1.5 py-1 items-center cursor-pointer hover:bg-gray-100/25"
+    class="hit flex flex-col space-y-2 rounded ring-1 ring-gray-500 hover:ring-gray-400 px-1.5 py-1 items-center cursor-pointer hover:bg-gray-100/25"
     @click="navigate"
   >
-    <!--  -->
-    <span class="font-medium flex flex-shrink-0">{{ p.title }}</span>
-    <span class="font-light ml-1 italic truncate text-sm text-gray-500"
-      >{{ p.subHeading }}
-    </span>
+    <div class="flex flex-row w-full items-center">
+      <span class="font-medium flex flex-shrink-0">{{ p.title }}</span>
+      <span
+        v-if="config.separator && p.subHeading"
+        class="separator"
+        :class="config.separator.startsWith(':') ? 'mr-2 ml-0.5' : 'mx-2'"
+      >
+        {{ config.separator }}
+      </span>
+      <span
+        class="font-light ml-1 italic truncate text-sm text-gray-600 dark:text-gray-400"
+        >{{ p.subHeading }}
+      </span>
+    </div>
+    <div
+      v-show="p.description || p.sections.length > 0 || p.subSections"
+      class="optional-content flex flex-col w-full"
+    >
+      <div v-show="p.description" class="description block text-xs self-start">
+        {{ p.description }}
+      </div>
+      <div
+        v-show="p.sections && p.sections.length > 0"
+        class="sections text-sm flex flex-row items-start"
+      >
+        <div class="ml-8 mr-4 mt-1 italic text-gray-500">sections:</div>
+        <div class="flex flex-row space-x-2 items-start">
+          <a
+            v-for="section in p.sections"
+            :key="section"
+            :href="`${p.url}/#${section}`"
+            class="flex hover:underline hover:bg-darker-100/50 p-1 rounded"
+            >{{ section }}</a
+          >
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<style lang="css">
+.hit .separator {
+  @apply text-gray-600 dark:text-gray-400;
+}
+</style>

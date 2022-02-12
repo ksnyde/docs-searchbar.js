@@ -37,6 +37,13 @@ export interface ExtendedConfig extends SearchBarConfig {
    * top line which has the title and sub-heading.
    */
   description?: string | string[];
+  /**
+   * The length at which the description should be trucated
+   */
+  descLength?: number;
+
+  /** can add a separator character such as `|` between "title" and "subHeading" */
+  separator?: string;
 
   sections?: string | string[];
   subSections?: string | string[];

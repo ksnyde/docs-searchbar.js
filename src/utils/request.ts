@@ -3,8 +3,8 @@ import { IMeilisearchSearchResponse, SearchBarConfig } from "~/types";
 const headers = (c: SearchBarConfig) => ({
   "Access-Control-Allow-Origin": "*",
   "Content-Type": "application/json",
-  ...(c.apiKey ? {Authorization: `Bearer ${c.apiKey}`} : {}),
-  ...(c.apiKey ? {"X-Meili-API-Key": c.apiKey} : {}),
+  ...(c.apiKey ? { Authorization: `Bearer ${c.apiKey}` } : {}),
+  ...(c.apiKey ? { "X-Meili-API-Key": c.apiKey } : {}),
 });
 
 export const get =
@@ -22,7 +22,7 @@ export const get =
         cb ? (result.then((r) => cb(r)) as Promise<U>) : (result as Promise<T>)
       ) as never extends U ? Promise<T> : Promise<U>;
     } else {
-      console.groupCollapsed(`Error with API`);
+      console.groupCollapsed(`Error with Meilisearch API`);
       console.info(`Request [${config.apiKey}]: GET ${url}`);
       console.warn(`Error [${res.status}]: ${res.statusText}`);
       console.groupEnd();
@@ -36,7 +36,8 @@ export const post =
     body: string,
     cb?: (r: T) => U
   ) => {
-    url = `${config.hostUrl.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
+    url = `${config.hostUrl?.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
+
     const res = await fetch(url, {
       method: "post",
       body,
@@ -58,11 +59,6 @@ export const post =
 
 export const search = (config: SearchBarConfig) => {
   return async (text: string) => {
-    // for (const idx of config.indexes) {
-    //   waitFor.push(
-    //     post(config)(`/indexes/${idx}/search`, JSON.stringify({ q: text }))
-    //   );
-    // }
     const query = post(config);
     const results = await query(
       `/indexes/${config.index}/search`,

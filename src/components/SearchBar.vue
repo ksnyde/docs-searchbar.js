@@ -17,6 +17,7 @@ const tooltip = ref();
 const searchText = ref("");
 
 const props = defineProps({
+  selected: { type: String, required: false },
   title: {
     type: [String, Array] as PropType<string | string[]>,
     default: "hierarchy_lvl0",
@@ -26,16 +27,33 @@ const props = defineProps({
     default: () => ["hierarchy_lvl1", "hierarchy_lvl2"],
   },
   description: { type: [String, Array], default: undefined },
+  descLength: { type: Number, default: undefined },
   placeholder: { type: String, default: "Search", required: false },
   placement: {
     type: String as PropType<Placement>,
     default: "bottom-end",
     required: false,
   },
+  focusKey: {
+    type: String as PropType<"CMD+P" | "CTRL+Space">,
+    required: false,
+  },
+  blurKey: { type: String as PropType<"Esc">, required: false, default: "Esc" },
   autocomplete: { type: String, default: "off", required: false },
+  separator: { type: String, default: "", required: false },
   groupBy: {
     type: String,
     default: undefined,
+    required: false,
+  },
+  /** props on document to look for H2 anchor sections */
+  sections: {
+    type: [String, Array] as PropType<string | string[] | undefined>,
+    required: false,
+  },
+  /** props on document to look for H3 anchor sections */
+  subSections: {
+    type: [String, Array] as PropType<string | string[] | undefined>,
     required: false,
   },
   skidding: { type: Number, required: false },
@@ -58,7 +76,10 @@ const extendedConfig = computed(() => {
     ...props.config,
     title: props.title,
     subHeading: props.subHeading,
+    separator: props.separator,
     description: props.description,
+    descLength: props.descLength,
+    sections: props.sections,
     limit: props.limit,
     offset: props.offset,
     groupBy: props.groupBy,
@@ -97,7 +118,9 @@ const state = reactive({
   /**
    * whether a grouping property has been included for group layout
    */
-  isGrouped: ref(props.groupBy && props.groupBy.length > 0 ? true : false),
+  isGrouped: computed(() =>
+    props.groupBy && props.groupBy.length > 0 ? true : false
+  ),
   /** at least one result present */
   hasResults: computed(() =>
     results.value?.hits?.length || 0 > 0 ? true : false
@@ -121,13 +144,36 @@ const show = computed(() => {
 });
 
 onKeyStroke("Escape", () => {
-  state.explicitClose = true;
-  el.value.blur();
+  if (props.blurKey === "Esc") {
+    state.explicitClose = true;
+    el.value.blur();
+  }
+});
+
+onKeyStroke("Down", () => {
+  console.log("down");
+});
+
+const { ctrl, space, cmd, k, up, down } = useMagicKeys();
+
+watchEffect(() => {
+  if (ctrl.value && space.value) {
+    console.log("naughty naughty");
+  }
+
+  if (up.value && state.hasResults && !state.explicitClose) {
+    console.log("up");
+  }
+  if (down.value && state.hasResults && !state.explicitClose) {
+    console.log("down");
+  }
+
+  if ((cmd.value || ctrl.value) && k.value) {
+    console.log("hey Mac");
+  }
 });
 
 onClickOutside(tooltip, () => {
-  console.log({ ...state });
-
   if (!state.inputFocused || state.tooltipFocused) {
     state.explicitClose = true;
   }
@@ -139,6 +185,8 @@ debouncedWatch(
     if (searchText.value.trim().length > 0) {
       state.searching = true;
       state.explicitClose = false;
+      console.log({ hostUrl: props.config.hostUrl });
+
       results.value = await search(props.config)(searchText.value);
       state.searching = false;
       if (props.config.debug) {
@@ -203,7 +251,7 @@ html.dark .v-popper__inner {
       class="w-full transition-opacity duration-200 ease-in-out"
       :placement="placement"
       :triggers="[]"
-      :autohide="false"
+      :auto-hide="false"
       :shown="show"
       :distance="distance"
       :skidding="skidding"
@@ -213,7 +261,7 @@ html.dark .v-popper__inner {
         id="${suggestionPrefix}"
         :value="searchText"
         type="string"
-        class="flex w-full searchbox__input pl-8 pr-2 py-1 ring-1 ring-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 shadow dark:text-gray-900 focus:placeholder-gray-500/35"
+        class="flex w-full searchbox__input pl-8 pr-2 py-1 ring-1 ring-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 shadow focus:placeholder-gray-500/35 text-gray-900/50 focus:text-gray-900 dark:bg-gray-700 dark:text-gray-100/50 dark:focus:text-gray-100"
         :placeholder="placeholder"
         :autocomplete="autocomplete"
         spellcheck="false"
@@ -250,9 +298,12 @@ html.dark .v-popper__inner {
           >
             nothing found
           </div>
-          <div v-if="state.hasResults" class="results-footer">
+          <div
+            v-if="state.hasResults"
+            class="results-footer flex w-full justify-end"
+          >
             <div
-              v-if="Number(hits.showing) !== Number(hits.totalHits)"
+              v-if="Number(hits.showing.value) !== Number(hits.totalHits.value)"
               class="footer pt-6 self-end font-light italic text-sm"
             >
               showing {{ hits.showing }} of {{ hits.totalHits }} results
@@ -268,7 +319,7 @@ html.dark .v-popper__inner {
       class="absolute flex h-full w-5 right-2 inset-y-0"
       :class="
         searchText.length > 0
-          ? 'text-gray-500/25 hover:text-gray-500/50 cursor-pointer'
+          ? 'text-gray-500/25 dark:text-gray-400/25 hover:text-gray-500/50 dark:hover:text-gray-400/50 cursor-pointer'
           : 'text-gray-500/0'
       "
       @click="searchText = ''"

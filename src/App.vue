@@ -8,18 +8,6 @@ type Env = "local" | "staging" | "production";
 
 const env = ref<Env>("local");
 
-const state = reactive({
-  groupBy: "",
-  distance: 0,
-  skidding: 0,
-  title: ["hierarchy_lvl0"] as string[],
-  subHeading: ["hierarchy_lvl1", "hierarchy_lvl2"] as string[],
-  description: [] as string[],
-  sections: [] as string[],
-  subSections: [] as string[],
-  placement: "bottom-end" as Placement,
-});
-
 const config: Record<Env, SearchBarConfig> = {
   local: {
     hostUrl: "local/",
@@ -45,7 +33,21 @@ const config: Record<Env, SearchBarConfig> = {
   },
 };
 
-const limit = ref(10);
+const state = reactive({
+  groupBy: "",
+  distance: 0,
+  skidding: 0,
+  title: ["hierarchy_lvl0"] as string[],
+  subHeading: ["hierarchy_lvl1", "hierarchy_lvl2"] as string[],
+  separator: "",
+  description: [] as string[],
+  descLength: undefined as undefined | number,
+  sections: [] as string[],
+  subSections: [] as string[],
+  placement: "bottom-end" as Placement,
+  limit: 10,
+  config: computed(() => config[env.value]),
+});
 </script>
 
 <template>
@@ -85,20 +87,7 @@ const limit = ref(10);
             <carbon-moon v-if="isDark" />
             <carbon-sun v-else />
           </button>
-          <search-bar
-            class="flex-grow"
-            :config="config[env]"
-            :limit="limit"
-            :placement="state.placement"
-            :skidding="state.skidding"
-            :distance="state.distance"
-            :group-by="state.groupBy"
-            :title="state.title"
-            :sub-heading="state.subHeading"
-            :description="state.description"
-            :sections="state.sections"
-            :sub-sections="state.subSections"
-          />
+          <search-bar class="flex-grow" v-bind="state" />
         </div>
       </div>
 
@@ -119,7 +108,6 @@ const limit = ref(10);
                     env = isEventWithValue(e) ? e.target.value : env;
                   }
                 "
-                class=""
               >
                 <option value="local">Local Docker</option>
                 <option value="staging">Staging Search</option>
@@ -152,18 +140,63 @@ const limit = ref(10);
                 "
               />
 
+              <label for="separator" class="mt-4">
+                <span class="font-bold">separator</span> prop
+              </label>
+              <select
+                name="separator"
+                id="separator"
+                :value="state.separator"
+                class=""
+                @change="
+                  (e) => {
+                    state.separator = isEventWithValue(e)
+                      ? e.target.value
+                      : env;
+                  }
+                "
+              >
+                <option value="" class="italic font-light">none</option>
+                <option value="|">| (aka, vertical bar)</option>
+                <option value=":">: (aka, colon)</option>
+              </select>
+
               <label for="description" class="mt-4">
                 <span class="font-bold">description</span> prop
               </label>
-              <input
-                type="text"
-                :value="state.description.join(', ')"
-                @change="
-                  (e) => {
-                    state.description = isEventWithValue(e) ? (e.target.value as string).split(/[,\s]+/) : state.description;
-                  }
-                "
-              />
+              <div class="flex flex-row w-full space-x-1">
+                <input
+                  type="text"
+                  class="flex-grow"
+                  :value="state.description.join(', ')"
+                  @change="
+                    (e) => {
+                      state.description = isEventWithValue(e) ? (e.target.value as string).split(/[,\s]+/) : state.description;
+                    }
+                  "
+                />
+                <select
+                  id="descLength"
+                  name="descLength"
+                  class="w-24"
+                  @change="
+                    (e) => {
+                      state.descLength = isEventWithValue(e)
+                        ? e.target.value
+                          ? Number(e.target.value)
+                          : undefined
+                        : state.descLength;
+                    }
+                  "
+                >
+                  <option :value="undefined">-</option>
+                  <option :value="25">25</option>
+                  <option :value="50">50</option>
+                  <option :value="100">100</option>
+                  <option :value="200">200</option>
+                  <option :value="200">500</option>
+                </select>
+              </div>
             </div>
             <div class="flex flex-col">
               <label for="groupBy"
@@ -191,7 +224,14 @@ const limit = ref(10);
                 <option value="hierarchy_lvl4">hierarchy_lvl4 prop</option>
               </select>
 
-              <label for="sections" class="mt-4">
+              <label
+                for="sections"
+                class="mt-4"
+                v-tooltip="{
+                  content:
+                    'properties to look for an array of anchor based sections in a document',
+                }"
+              >
                 <span class="font-bold">sections</span> prop
               </label>
               <input
@@ -218,131 +258,121 @@ const limit = ref(10);
               />
             </div>
 
-            <div class="flex flex-col space-y-2">
-              <label for="distance">
-                <span class="font-bold">distance</span> prop
-              </label>
-              <input
-                type="range"
-                :value="state.distance"
-                :min="-30"
-                :max="30"
-                @dblclick="
-                  () => {
-                    state.distance = 0;
-                  }
-                "
-                @change="
-                  (e) => {
-                    state.distance = isEventWithValue(e)
-                      ? Number(e.target.value)
-                      : state.distance;
-                  }
-                "
-              />
+            <div class="flex flex-col space-y-4">
+              <div class="flex flex-col w-full">
+                <label for="distance">
+                  <span class="font-bold">distance</span> prop
+                </label>
 
-              <label for="skidding">
-                <span class="font-bold">skidding</span> prop
-              </label>
-              <input
-                type="range"
-                :value="state.skidding"
-                :min="-30"
-                :max="30"
-                @dblclick="
-                  () => {
-                    state.skidding = 0;
-                  }
-                "
-                @change="
-                  (e) => {
-                    state.skidding = isEventWithValue(e)
-                      ? Number(e.target.value)
-                      : state.skidding;
-                  }
-                "
-              />
-
-              <label for="placement" class="pt-2">
-                <span class="font-bold">placement</span> prop
-              </label>
-              <select
-                name="placement"
-                id="placement"
-                :value="state.placement"
-                class=""
-                @change="
-                  (e) => {
-                    state.placement = isEventWithValue(e)
-                      ? e.target.value
-                      : state.placement;
-                  }
-                "
-              >
-                <option value="auto">auto</option>
-                <option value="bottom-end">bottom-end</option>
-                <option value="bottom-start">bottom-start</option>
-                <option value="bottom">bottom</option>
-                <option value="top">top</option>
-                <option value="top-start">top-start</option>
-                <option value="top-end">top-end</option>
-                <option value="left">left</option>
-                <option value="right">right</option>
-              </select>
-            </div>
-          </div>
-        </details>
-      </div>
-
-      <div
-        class="flex border-1 border-dotted border-gray-500 rounded p-2 w-full place-items-center"
-      >
-        <details class="w-full" open>
-          <summary class="hover:bg-gray-100/25 cursor-pointer w-full p-1">
-            Documentation
-          </summary>
-
-          <div class="p-4 flex flex-col space-y-2">
-            <details>
-              <summary>Meilisearch Look and Feel</summary>
-              <img
-                src="meili.png"
-                alt="image of what meilisearch's own search bar looks like"
-                class="max-w-90%"
-              />
-            </details>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 w-full pt-4">
-              <div>
-                <h2>Properties</h2>
-                <div class="content"></div>
+                <div class="flex flex-row w-full items-center">
+                  <input
+                    type="range"
+                    class="flex-grow"
+                    :value="state.distance"
+                    :min="-30"
+                    :max="30"
+                    @dblclick="
+                      () => {
+                        state.distance = 0;
+                      }
+                    "
+                    @change="
+                      (e) => {
+                        state.distance = isEventWithValue(e)
+                          ? Number(e.target.value)
+                          : state.distance;
+                      }
+                    "
+                  />
+                  <div class="flex ml-2 h-auto">{{ state.distance }}</div>
+                </div>
               </div>
-              <div>
-                <h2>Slots</h2>
+
+              <div class="flex flex-col w-full">
+                <label for="skidding">
+                  <span class="font-bold">skidding</span> prop
+                </label>
+
+                <div class="flex flex-row w-full items-center">
+                  <input
+                    type="range"
+                    class="flex-grow"
+                    :value="state.skidding"
+                    :min="-30"
+                    :max="30"
+                    @dblclick="
+                      () => {
+                        state.skidding = 0;
+                      }
+                    "
+                    @change="
+                      (e) => {
+                        state.skidding = isEventWithValue(e)
+                          ? Number(e.target.value)
+                          : state.skidding;
+                      }
+                    "
+                  />
+                  <div class="flex ml-2 h-auto">{{ state.distance }}</div>
+                </div>
               </div>
-              <div>
-                <h2>Config</h2>
+
+              <div class="flex flex-col w-full">
+                <label for="placement">
+                  <span class="font-bold">placement</span> prop
+                </label>
+                <select
+                  name="placement"
+                  id="placement"
+                  :value="state.placement"
+                  class=""
+                  @change="
+                    (e) => {
+                      state.placement = isEventWithValue(e)
+                        ? e.target.value
+                        : state.placement;
+                    }
+                  "
+                >
+                  <option value="auto">auto</option>
+                  <option value="bottom-end">bottom-end</option>
+                  <option value="bottom-start">bottom-start</option>
+                  <option value="bottom">bottom</option>
+                  <option value="top">top</option>
+                  <option value="top-start">top-start</option>
+                  <option value="top-end">top-end</option>
+                  <option value="left">left</option>
+                  <option value="right">right</option>
+                </select>
               </div>
             </div>
           </div>
         </details>
       </div>
+
+      <documentation />
     </div>
   </div>
 </template>
 
 <style lang="css" scoped>
-h2 {
-  @apply text-2xl text-center rounded bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-1 py-2;
-}
-
 summary {
   @apply hover:bg-gray-100/25 dark:hover:bg-gray-900 cursor-pointer w-full p-1;
 }
 
 select,
 input {
-  @apply px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded;
+  @apply px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded ring-gray-300 focus:ring-indigo-500 ring-1 border-none h-50px;
 }
+
+input[type="range"] {
+  @apply ring-0;
+}
+
+select {
+  @apply py-3.5 max-h-50px;
+}
+
 label {
   @apply mb-0.5;
 }
