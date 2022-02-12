@@ -13,15 +13,21 @@ const props = defineProps({
 });
 
 const pk = computed(() => props.config.primaryKey as string);
-
-function navigate() {
-  console.log(`navigate to: `);
-}
 </script>
 
 <template>
   <div class="group">
-    <div class="heading border-b-1 border-gray-900 dark:border-gray-100 mb-4">
+    <div
+      class="heading border-b-1 border-gray-900 dark:border-gray-100 mb-4 flex flex-row"
+    >
+      <span v-if="$slots['default']" class="group-icon mr-1 flex">
+        <slot
+          name="default"
+          group="group"
+          config="config"
+          results="results"
+        ></slot>
+      </span>
       {{ group }}
     </div>
     <div class="flex flex-col w-full pl-8 space-y-2">

@@ -1,6 +1,6 @@
 {
   "name": "meili-searchbar",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Add a relevant search bar to your documentation using Meilisearch",
   "keywords": [
     "documentation",
@@ -8,12 +8,10 @@
     "meilisearch",
     "search-as-you-type"
   ],
-  "main": "dist/npm/main.js",
-  "module": "dist/npm/main.mjs",
+  "module": "meili-searchbar.es.js",
   "exports": {
-    "default": "./dist/npm/main.mjs",
-    "import": "./dist/npm/main.mjs",
-    "require": "./dist/npm/main.js"
+    "default": "./dist/meili-searchbar.es.js",
+    "import": "./dist/meili-searchbar.es.js"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -39,14 +37,27 @@
   "license": "MIT",
   "repository": "ksnyde/meili-searchbar",
   "devDependencies": {
-    "@iconify-json/carbon": "^1.0.14",
+    "@iconify-json/bx": "^1.0.3",
+    "@iconify-json/carbon": "^1.0.15",
+    "@iconify-json/cib": "^1.0.1",
+    "@iconify-json/clarity": "^1.0.2",
+    "@iconify-json/eos-icons": "^1.0.4",
+    "@iconify-json/ep": "^1.0.5",
+    "@iconify-json/file-icons": "^1.0.1",
+    "@iconify-json/fluent": "^1.0.18",
     "@iconify-json/ic": "^1.0.8",
-    "@types/node": "14",
+    "@iconify-json/icon-park-outline": "^1.0.2",
+    "@iconify-json/mdi": "^1.0.17",
+    "@iconify-json/ph": "^1.0.4",
+    "@iconify-json/vscode-icons": "^1.0.3",
+    "@iconify-json/zondicons": "^1.0.1",
+    "@types/node": "^14.18.11",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
-    "@vitejs/plugin-vue": "^2.1.0",
-    "@vitest/ui": "^0.2.8",
+    "@vitejs/plugin-vue": "^2.2.0",
+    "@vitest/ui": "^0.3.2",
     "cypress": "^9.4.1",
+    "dotenv": "^16.0.0",
     "eslint": "^8.8.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
@@ -61,15 +72,15 @@
     "unplugin-auto-import": "^0.5.11",
     "unplugin-icons": "^0.13.1",
     "unplugin-vue-components": "^0.17.18",
-    "vite": "^2.7.13",
-    "vite-plugin-inspect": "^0.3.13",
+    "vite": "^2.8.1",
+    "vite-plugin-inspect": "^0.3.14",
     "vite-plugin-windicss": "^1.7.0",
-    "vitest": "^0.2.8",
+    "vitest": "^0.3.2",
     "vue": "^3.2.30"
   },
   "dependencies": {
-    "@vueuse/core": "^7.6.0",
-    "floating-vue": "^2.0.0-beta.5",
+    "@vueuse/core": "^7.6.1",
+    "floating-vue": "^2.0.0-beta.6",
     "native-dash": "^1.22.0"
   }
 }
