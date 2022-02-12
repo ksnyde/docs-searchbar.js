@@ -1,6 +1,6 @@
 {
   "name": "meili-searchbar",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Add a relevant search bar to your documentation using Meilisearch",
   "keywords": [
     "documentation",
@@ -8,12 +8,10 @@
     "meilisearch",
     "search-as-you-type"
   ],
-  "main": "dist/npm/main.js",
-  "module": "dist/npm/main.mjs",
+  "module": "meili-searchbar.es.js",
   "exports": {
-    "default": "./dist/npm/main.mjs",
-    "import": "./dist/npm/main.mjs",
-    "require": "./dist/npm/main.js"
+    "default": "./dist/meili-searchbar.es.js",
+    "import": "./dist/meili-searchbar.es.js"
   },
   "scripts": {
     "clean": "rimraf dist",
