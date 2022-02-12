@@ -1,6 +1,6 @@
 {
   "name": "meili-searchbar",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Add a relevant search bar to your documentation using Meilisearch",
   "keywords": [
     "documentation",
@@ -9,6 +9,8 @@
     "search-as-you-type"
   ],
   "module": "meili-searchbar.es.js",
+  "type": "module",
+  "types": "./dist/src/",
   "exports": {
     "default": "./dist/meili-searchbar.es.js",
     "import": "./dist/meili-searchbar.es.js"
@@ -18,17 +20,11 @@
     "build": "run-s clean build:bundle",
     "build:bundle": "npx vite build",
     "dev": "npx vite dev",
-    "playground": "yarn --cwd ./playgrounds/html && yarn --cwd ./playgrounds/html serve",
-    "playground:build": "yarn --cwd ./playgrounds/html && yarn --cwd ./playgrounds/html build",
-    "playground:js": "yarn --cwd ./playgrounds/javascript && yarn --cwd ./playgrounds/javascript serve",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "test:ui": "vitest ui",
-    "test:browser": "yarn --cwd ./tests/env/browser && yarn --cwd ./tests/env/browser setup && yarn --cwd ./tests/env/browser serve",
-    "test:e2e:watch": "concurrently --kill-others -s first \"yarn test:browser\" \"cypress open\"",
-    "test:e2e": "concurrently --kill-others -s first \"yarn test:browser\" \"cypress run\""
+    "test:ui": "vitest ui"
   },
   "files": [
     "dist/"
@@ -73,6 +69,7 @@
     "unplugin-icons": "^0.13.1",
     "unplugin-vue-components": "^0.17.18",
     "vite": "^2.8.1",
+    "vite-plugin-dts": "^0.9.9",
     "vite-plugin-inspect": "^0.3.14",
     "vite-plugin-windicss": "^1.7.0",
     "vitest": "^0.3.2",

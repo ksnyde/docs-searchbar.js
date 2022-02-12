@@ -4,29 +4,11 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
-    'Bx:bxLinkAlt': typeof import('~icons/bx/bx-link-alt')['default']
-    'Carbon:development': typeof import('~icons/carbon/development')['default']
-    CarbonMoon: typeof import('~icons/carbon/moon')['default']
-    CarbonSun: typeof import('~icons/carbon/sun')['default']
-    'Cib:rust': typeof import('~icons/cib/rust')['default']
-    'Clarity:bundleLine': typeof import('~icons/clarity/bundle-line')['default']
-    'Clarity:networkGlobeLine': typeof import('~icons/clarity/network-globe-line')['default']
     Documentation: typeof import('./components/documentation/Documentation.vue')['default']
-    'EosIcons:applicationWindowOutlined': typeof import('~icons/eos-icons/application-window-outlined')['default']
-    'Ep:documentCopy': typeof import('~icons/ep/document-copy')['default']
-    'FileIcons:typescript': typeof import('~icons/file-icons/typescript')['default']
-    'Fluent:documentUnknown24Regular': typeof import('~icons/fluent/document-unknown24-regular')['default']
     GroupedHits: typeof import('./components/GroupedHits.vue')['default']
     GroupIcon: typeof import('./components/documentation/GroupIcon.vue')['default']
-    'Ic:baselineSecurityUpdate': typeof import('~icons/ic/baseline-security-update')['default']
     'Ic:roundCancel': typeof import('~icons/ic/round-cancel')['default']
-    'Ic:roundCode': typeof import('~icons/ic/round-code')['default']
     'Ic:roundSearch': typeof import('~icons/ic/round-search')['default']
-    'IconParkOutline:guideBoard': typeof import('~icons/icon-park-outline/guide-board')['default']
-    'Mdi:fileDocument': typeof import('~icons/mdi/file-document')['default']
-    'Mdi:github': typeof import('~icons/mdi/github')['default']
-    'Mdi:run': typeof import('~icons/mdi/run')['default']
-    'Ph:infoLight': typeof import('~icons/ph/info-light')['default']
     SearchBar: typeof import('./components/SearchBar.vue')['default']
     SearchHit: typeof import('./components/SearchHit.vue')['default']
     SearchInterface: typeof import('./components/documentation/SearchInterface.vue')['default']
@@ -34,8 +16,6 @@ declare module 'vue' {
     SearchResults: typeof import('./components/SearchResults.vue')['default']
     SearchSlot: typeof import('./components/documentation/SearchSlot.vue')['default']
     Separator: typeof import('./components/Separator.vue')['default']
-    'VscodeIcons:fileTypeApib': typeof import('~icons/vscode-icons/file-type-apib')['default']
-    'Zondicons:plugin': typeof import('~icons/zondicons/plugin')['default']
   }
 }
 
