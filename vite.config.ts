@@ -9,6 +9,7 @@ import Components from "unplugin-vue-components/vite";
 import AutoImport from "unplugin-auto-import/vite";
 import WindiCSS from "vite-plugin-windicss";
 import Inspect from "vite-plugin-inspect";
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
   server: {
@@ -41,8 +42,8 @@ export default defineConfig({
   },
   build: {
     lib: {
-      name: "particle-components",
-      entry: path.resolve(process.cwd(), "src/components/SearchBar.vue"),
+      name: "meili-searchbar",
+      entry: path.resolve(process.cwd(), "src/components/index"),
       formats: ["es"],
     },
     minify: "esbuild",
@@ -98,6 +99,7 @@ export default defineConfig({
       // change this to enable inspect for debugging
       enabled: false,
     }),
+    dts(),
   ],
 
   optimizeDeps: {

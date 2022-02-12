@@ -12,7 +12,7 @@ import {
   TransformerFunction,
 } from "~/types";
 import { groupBy } from "native-dash";
-import GroupIcon from "./documentation/GroupIcon.vue";
+
 const el = ref();
 const tooltip = ref();
 const searchText = ref("");
