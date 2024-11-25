@@ -27,6 +27,16 @@ const props = defineProps({
     type: [String, Array] as PropType<string | string[]>,
     default: () => ["hierarchy_lvl1", "hierarchy_lvl2"],
   },
+  /** the icon show to the left of a search suggestion */
+  primaryIcons: {
+    type: Object as PropType<Record<string, string>>,
+    default: () => {},
+  },
+  /** the icon show to the right of a search suggestion */
+  secondaryIcons: {
+    type: Object as PropType<Record<string, string>>,
+    default: () => {},
+  },
   description: { type: [String, Array], default: undefined },
   descLength: { type: Number, default: undefined },
   placeholder: { type: String, default: "Search", required: false },

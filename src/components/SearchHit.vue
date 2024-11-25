@@ -60,7 +60,29 @@ function navigate() {
     class="hit flex flex-col space-y-2 rounded ring-1 ring-gray-500 hover:ring-gray-400 px-1.5 py-1 items-center cursor-pointer hover:bg-gray-100/25"
     @click="navigate"
   >
+    <div class="search-suggestion">
+      <slot class="top"></slot>
+      <slot>
+        {{ mainIndex}}
+      </slot>
+      <slot class="bottom"></slot>
+    </div>
+
+    <search-bar v-slot="{doc}" debug="true" url="" >
+      <img :src="icon(doc.area)" />
+      {{ doc[mainIndex] }}
+    </search-bar>
+
     <div class="flex flex-row w-full items-center">
+      <span
+        v-if="
+          config.primaryIconKey &&
+          Object.keys(config.primaryIcons).includes(config.primaryIconKey)
+        "
+        class="primary-icon"
+      >
+        {{ config.primaryIcon[config.primaryIconKey] }}
+      </span>
       <span class="font-medium flex flex-shrink-0">{{ p.title }}</span>
       <span
         v-if="config.separator && p.subHeading"

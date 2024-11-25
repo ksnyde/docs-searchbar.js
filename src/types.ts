@@ -27,7 +27,9 @@ export interface SearchBarConfig {
   headers?: Record<string, any>;
 }
 
-export interface ExtendedConfig extends SearchBarConfig {
+export interface ExtendedConfig<K extends readonly string[]>
+  extends SearchBarConfig {
+  indexKeys: K;
   /** the property in the document which will be displayed as the TITLE */
   title?: string | string[];
   /** the property in the document which will be displayed as the SUB HEADING */
@@ -38,12 +40,25 @@ export interface ExtendedConfig extends SearchBarConfig {
    */
   description?: string | string[];
   /**
-   * The length at which the description should be trucated
+   * The length at which the description should be truncated
    */
   descLength?: number;
 
   /** can add a separator character such as `|` between "title" and "subHeading" */
   separator?: string;
+
+  /**
+   * A lookup table of icons based on the value of one of the properties of the
+   * Index.
+   */
+  primaryIcons: Record<string, string>;
+  /**
+   * the key on the index which will determine the primary icon or alternatively
+   * a user can pass in a callback which will receive the full key/value pair of
+   * the given document.
+   */
+  primaryIconKey?: string | (() => string);
+  secondaryIcons: Record<string, string>;
 
   sections?: string | string[];
   subSections?: string | string[];
